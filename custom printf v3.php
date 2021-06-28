@@ -5,14 +5,14 @@ namespace customPrint;
 use Exception;
 
 $time_start = microtime(true);
-printf('J\'achète %d de vos croissants, sinon je vais vous %s le %s bande de %s.', 5, 'claquer', 'derrière', 'fous');
+printf('J\'achète %d de vos croissants, sinon je vais vous %s le %s bande de %s', 5, 'claquer', 'derrière', 'fous');
 $time_end = microtime(true);
 echo 'Temps d\'execution [fonction printf] : '. (($time_end-$time_start)*100).PHP_EOL;
 
 //0.0034  3.4ms d'execution pour le vrai printf
 //0.0121  12.1ms d'execution pour le custom v1
 //0.0109  10.9ms d'execution pour le custom v2
-//0.0107  10.7ms d'execution pour le custom v3
+//0.0105  10.5ms d'execution pour le custom v3
 
 function printf(string $text, mixed ... $args) {
 
@@ -25,13 +25,12 @@ function printf(string $text, mixed ... $args) {
         while(($pos = strpos($text, '%'.$value, $posIndex)) !== false)
         {
             $argumentFoundPlace[] = ['value' => '%'.$value, 'pos' => $pos];
-            if($pos+2 < strlen($text)) $posIndex = $pos+2;
-            else break;
+            $posIndex = $pos+2;
         }
     }
     $nbValues = count($argumentFoundPlace);
     if($nbValues != count($args)) {
-        echo 'ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues='.$nbValues.', count ars = '.count($args).PHP_EOL;
+        echo 'ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues='.$nbValues.', count args = '.count($args).']'.PHP_EOL;
         die();
     }
     /*$time_end = microtime(true);
