@@ -3,15 +3,17 @@
 namespace customPrint;
 
 $time_start = microtime(true);
-printf('J\'achète %d de vos croissants, sinon je vais vous %s le %s bande de %s.', 5, 'péter', 'cul', 'merdes').PHP_EOL;
+printf('J\'achète %d de vos croissants, sinon je vais vous %s le %s bande de %s.', 5, 'péter', 'cul', 'merdes');
 $time_end = microtime(true);
-echo 'Temps d\'execution : '. (($time_end-$time_start)*100);
+echo 'Temps d\'execution [fonction printf] : '. (($time_end-$time_start)*100).PHP_EOL;
 
 //0.0121  12.1ms d'execution pour le custom
 //0.0034 3.4ms d'execution pour le vrai printf
 
 function printf(string $text, mixed ... $args) {
 
+    $time_start = microtime(true);
+    $time_print_start = microtime(true);
     $nbValues = 0;
     $argumentPossibles = ['b','c','d','e','E','f','g','G','h','H','o', 's', 'u', 'x', 'X'];
     $argumentFoundPlace = array();
@@ -43,14 +45,18 @@ function printf(string $text, mixed ... $args) {
         echo 'ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues='.$nbValues.', count ars = '.count($args).PHP_EOL;
         die();
     }
-    unset($nbValues);
-    unset($argumentPossibles);
+    //$time_end = microtime(true);
+    //echo 'Temps d\'execution [foreach argumentPossibles] : '. (($time_end-$time_start)*100).PHP_EOL;
+    //$time_start = microtime(true);
     usort($argumentFoundPlace, function ($a, $b) {
         if ($a['pos'] == $b['pos']) {
             return 0;
         }
         return ($a['pos'] < $b['pos']) ? -1 : 1;
     });
+    //$time_end = microtime(true);
+    //echo 'Temps d\'execution [usort()] : '. (($time_end-$time_start)*100).PHP_EOL;
+    //$time_start = microtime(true);
     /*foreach($argumentFoundPlace as $key => $value)
     {
         echo '[index = '.$key.', Value = '. $value['value']. ', Position : '. $value['pos'].']'.PHP_EOL;
@@ -103,5 +109,9 @@ function printf(string $text, mixed ... $args) {
             }
         }
     }
-    echo $text;
+    $time_end = microtime(true);
+    echo $text.PHP_EOL;
+    echo 'Temps d\'execution [foreach remplacement %] : '. (($time_end-$time_start)*100).PHP_EOL;
+    $time_print_end = microtime(true);
+    echo 'Temps d\'execution [printf intérieur total] : '. (($time_print_end-$time_print_start)*100).PHP_EOL;
 }
