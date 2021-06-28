@@ -57,7 +57,6 @@ function printf(string $text, mixed ... $args) {
         echo '[index = '.$key.', Value = '. $value['value']. ', Position : '. $value['pos'].']'.PHP_EOL;
     }*/
     $countStrAugment = 0;
-    $highestChanged = 0;
     for($i = 0; $i < $nbValues; $i++) {
         //echo '------------------------------------------'.PHP_EOL;
         $tag = $argumentFoundPlace[$i]['pos'];
@@ -107,13 +106,7 @@ function printf(string $text, mixed ... $args) {
                 break;
             }
         }
-        if($tag > $highestChanged) {
-            $text = substr_replace($text, $args[$i], $tag+$countStrAugment, 2);
-            $highestChanged = $tag;
-        }
-        else {
-            $text = substr_replace($text, $args[$i], $tag, 2);
-        }
+        $text = substr_replace($text, $args[$i], $tag+$countStrAugment, 2);
         $countStrAugment += (strlen($args[$i])-2);
     }
     echo $text.PHP_EOL;
