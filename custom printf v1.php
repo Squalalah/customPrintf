@@ -11,7 +11,7 @@ echo 'Temps d\'execution [fonction printf] : '. (($time_end-$time_start)*100).PH
 //0.0066  6.6ms d'execution en moyenne (1000 tests) pour le custom v1
 //0.0060  6.0ms d'execution en moyenne (1000 tests) pour le custom v2
 //0.0025  2.5ms d'execution en moyenne (1000 tests) pour le custom v3
-//0.0016  1.6ms d'execution en moyenne (1000 tests) pour le custom v4
+//0.0016  1.6ms d'execution en moyenne (1000 tests) pour le custom v4 (toutes les options de valeur ne sont pas gérés)
 
 //0.0034  3.4ms d'execution pour le vrai printf
 //0.0121  12.1ms d'execution pour le custom v1

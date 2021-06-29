@@ -13,17 +13,16 @@ echo 'Temps d\'execution [fonction printf] : '. (($time_end-$time_start)*100).PH
 //0.0066  6.6ms d'execution en moyenne (1000 tests) pour le custom v1
 //0.0060  6.0ms d'execution en moyenne (1000 tests) pour le custom v2
 //0.0025  2.5ms d'execution en moyenne (1000 tests) pour le custom v3
-//0.0016  1.6ms d'execution en moyenne (1000 tests) pour le custom v4
+//0.0016  1.6ms d'execution en moyenne (1000 tests) pour le custom v4 (toutes les valeurs ne sont pas encore géré, contrairement au printf original)
 
 //0.0034  3.4ms d'execution pour le vrai printf
 //0.0121  12.1ms d'execution pour le custom v1
 //0.0109  10.9ms d'execution pour le custom v2
 //0.0105  10.5ms d'execution pour le custom v3
-//0.0088   8.8ms d'execution pour le custom v4 (moyenne à 9ms)
+//0.0082   8.2ms d'execution pour le custom v4 (moyenne à 8.6ms)
 
 function printf(string $text, mixed ... $args) {
 
-    $time_print_start = microtime(true);
     $argumentPossibles = ['b','c','d','e','E','f','g','G','h','H','o', 's', 'u', 'x', 'X'];
     $argumentFoundPlace = array();
     $posIndex = 0;
@@ -42,18 +41,11 @@ function printf(string $text, mixed ... $args) {
         echo '[index = '.$key.', Value = '. $value['value']. ', Position : '. $value['pos'].']'.PHP_EOL;
     }*/
     $nbValues = count($argumentFoundPlace);
-    if($nbValues != count($args)) {
-        echo 'ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues='.$nbValues.', count args = '.count($args).']'.PHP_EOL;
-        die();
-    }
+    if($nbValues != count($args)) throw new Exception('ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues = '.$nbValues.', count args = '.count($args).']');
     $countStrAugment = 0;
     for($i = 0; $i < $nbValues; $i++) {
         //echo '------------------------------------------'.PHP_EOL;
-        $tag = $argumentFoundPlace[$i]['pos'];
-        /*echo '[index = '.$i. ', texte= '.$textFirstSplit.PHP_EOL.']';
-        echo '[suite string = "'.$textSecondSplit.'"'.PHP_EOL;
-        echo '[index testé ='.$i.' , value testé = '. $argumentFoundPlace[$i]['value'].', args même index = '.$args[$i].']'.PHP_EOL;
-        */
+        //echo '[index testé ='.$i.' , value testé = '. $argumentFoundPlace[$i]['value'].', args même index = '.$args[$i].']'.PHP_EOL;
         switch($argumentFoundPlace[$i]['value'])
         {
             case '%s':
@@ -64,20 +56,43 @@ function printf(string $text, mixed ... $args) {
                 if(is_int($args[$i])) {
                     $args[$i] = decbin($args[$i]);
                 }
-                else throw new Exception('Erreur de type');
+                else throw new Exception('Nombre entier attendu au paramètre '.$i);
                 break;
             }
-            //case '%u':
-            //case '%c':
-            //case '%o':
+            case '%c': {
+                if(is_int($args[$i]))
+                {
+                    if(0 <= $args[$i] && $args[$i] <= 255) {
+                        $args[$i] = chr($args[$i]);
+                    }
+                    else $args[$i] = chr(255);
+                }
+                else throw new Exception('Nombre entier attendu au paramètre '.$i);
+                break;
+            }
+            case '%o': {
+                if (is_int($args[$i])) {
+                    $args[$i] = decoct($args[$i]);
+                }
+                else throw new Exception('Nombre entier attendu au paramètre '.$i);
+                break;
+            }
             //case '%x':
             //case '%X':
             case '%d':
             {
                 if (is_int($args[$i])) {
+                    $maxSigned = pow(2, 32)*2;
+                    if(($args[$i]) < 0) {
+                        $args[$i] = $maxSigned+$args[$i];
+                    }
+                    elseif ($args[$i] > $maxSigned)
+                    {
+                        $args[$i] = $args[$i]-$maxSigned;
+                    }
                     $args[$i] = (string)$args[$i];
                 }
-                else throw new Exception('Erreur de type');
+                else throw new Exception('Nombre entier attendu au paramètre '.$i);
                 break;
             }
             //case '%e':
@@ -92,14 +107,12 @@ function printf(string $text, mixed ... $args) {
                 if(is_float($args[$i])) {
                     $args[$i] = (string)$args[$i];
                 }
-                else throw new Exception('Erreur de type');
+                else throw new Exception('Nombre démical attendu au paramètre '.$i);
                 break;
             }
         }
-        $text = substr_replace($text, $args[$i], $tag+$countStrAugment, 2);
+        $text = substr_replace($text, $args[$i], $argumentFoundPlace[$i]['pos']+$countStrAugment, 2);
         $countStrAugment += (strlen($args[$i])-2);
     }
     echo $text.PHP_EOL;
-    $time_print_end = microtime(true);
-    echo 'Temps d\'execution [printf intérieur total] : '. (($time_print_end-$time_print_start)*100).PHP_EOL;
 }
