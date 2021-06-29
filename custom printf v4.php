@@ -40,30 +40,11 @@ function printf(string $text, mixed ... $args) {
         echo 'ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues='.$nbValues.', count args = '.count($args).']'.PHP_EOL;
         die();
     }
-    /*$time_end = microtime(true);
-    echo 'Temps d\'execution [foreach argumentPossibles] : '. (($time_end-$time_start)*100).PHP_EOL;
-    $time_start = microtime(true);
-    usort($argumentFoundPlace, function ($a, $b) {
-        if ($a['pos'] == $b['pos']) {
-            return 0;
-        }
-        return ($a['pos'] < $b['pos']) ? -1 : 1;
-    });
-    $time_end = microtime(true);
-    echo 'Temps d\'execution [usort()] : '. (($time_end-$time_start)*100).PHP_EOL;
-    $time_start = microtime(true);
-    foreach($argumentFoundPlace as $key => $value)
-    {
-        echo '[index = '.$key.', Value = '. $value['value']. ', Position : '. $value['pos'].']'.PHP_EOL;
-    }*/
     $countStrAugment = 0;
     for($i = 0; $i < $nbValues; $i++) {
         //echo '------------------------------------------'.PHP_EOL;
         $tag = $argumentFoundPlace[$i]['pos'];
-        /*echo '[index = '.$i. ', texte= '.$textFirstSplit.PHP_EOL.']';
-        echo '[suite string = "'.$textSecondSplit.'"'.PHP_EOL;
-        echo '[index testé ='.$i.' , value testé = '. $argumentFoundPlace[$i]['value'].', args même index = '.$args[$i].']'.PHP_EOL;
-        */
+        //echo '[index testé ='.$i.' , value testé = '. $argumentFoundPlace[$i]['value'].', args même index = '.$args[$i].']'.PHP_EOL;
         switch($argumentFoundPlace[$i]['value'])
         {
             case '%s':
