@@ -44,7 +44,6 @@ function printf(string $text, mixed ... $args) {
     if($nbValues != count($args)) throw new Exception('ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues = '.$nbValues.', count args = '.count($args).']');
     $countStrAugment = 0;
     for($i = 0; $i < $nbValues; $i++) {
-        //echo '------------------------------------------'.PHP_EOL;
         //echo '[index testé ='.$i.' , value testé = '. $argumentFoundPlace[$i]['value'].', args même index = '.$args[$i].']'.PHP_EOL;
         switch($argumentFoundPlace[$i]['value'])
         {
