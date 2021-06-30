@@ -5,7 +5,11 @@ namespace customPrint;
 use Exception;
 
 $time_start = microtime(true);
-printf('J\'achète %d de vos croissants, sinon je vais vous %s le %s bande de %s du %d ième arrondissement', 5, 'claquer', 'derrière', 'fous', 20);
+try {
+    printf('J\'achète %d% de vos croissants, sinon je vais vous %s le %s bande de %s du %d ième arrondissement', 5, 'claquer', 'derrière', 'fous', 20);
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 $time_end = microtime(true);
 echo 'Temps d\'execution [fonction printf] : '. (($time_end-$time_start)*100).PHP_EOL;
 
