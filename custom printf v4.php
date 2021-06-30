@@ -3,21 +3,16 @@
 namespace customPrint;
 
 use Exception;
-
-$time_start = microtime(true);
-try {
-    printf('J\'achète %d% de vos croissants, sinon je vais vous %s le %s bande de %s du %d ième arrondissement', 5, 'claquer', 'derrière', 'fous', 20);
-} catch (Exception $e) {
-    echo $e->getMessage();
+$count = 0;
+for( $i = 0; $i < 10000; $i++) {
+    $time_start = microtime(true);
+    printf('J\'achète %d de vos croissants, sinon je vais vous %s le %s bande de %s du %d ième arrondissement', 5, 'claquer', 'derrière', 'fous', 20);
+    $count += microtime(true)-$time_start;
 }
-$time_end = microtime(true);
-echo 'Temps d\'execution [fonction printf] : '. (($time_end-$time_start)*100).PHP_EOL;
+echo 'Temps d\'execution [fonction printf] : '. (($count/10000)*100).PHP_EOL;
 
-//0.0036  3.6ms d'execution en moyenne (1000 tests) pour le printf d'origine
-//0.0066  6.6ms d'execution en moyenne (1000 tests) pour le custom v1
-//0.0060  6.0ms d'execution en moyenne (1000 tests) pour le custom v2
-//0.0025  2.5ms d'execution en moyenne (1000 tests) pour le custom v3
-//0.0016  1.6ms d'execution en moyenne (1000 tests) pour le custom v4 (toutes les valeurs ne sont pas encore géré, contrairement au printf original)
+//0.0050  5ms d'execution en moyenne (10000 tests) pour le printf d'origine
+//0.0016  1.6ms d'execution en moyenne (10000 tests) pour le custom printf v4
 
 //0.0034  3.4ms d'execution pour le vrai printf
 //0.0121  12.1ms d'execution pour le custom v1
@@ -78,13 +73,12 @@ function printf(string $text, mixed ... $args) {
             case '%d':
             {
                 if (is_int($args[$i])) {
-                    $maxSigned = pow(2, 32)*2;
                     if(($args[$i]) < 0) {
-                        $args[$i] = $maxSigned+$args[$i];
+                        $args[$i] = PHP_INT_MAX+$args[$i];
                     }
-                    elseif ($args[$i] > $maxSigned)
+                    elseif ($args[$i] > PHP_INT_MAX)
                     {
-                        $args[$i] = $args[$i]-$maxSigned;
+                        $args[$i] = $args[$i]-PHP_INT_MAX;
                     }
                 }
                 else throw new Exception('Nombre entier attendu au paramètre '.$i);
