@@ -36,15 +36,10 @@ function printf(string $text, mixed ... $args) {
             $posIndex = $pos+2;
         }
     }
-    /*foreach($argumentFoundPlace as $key => $value)
-    {
-        echo '[index = '.$key.', Value = '. $value['value']. ', Position : '. $value['pos'].']'.PHP_EOL;
-    }*/
     $nbValues = count($argumentFoundPlace);
     if($nbValues != count($args)) throw new Exception('ERREUR, nombre de paramètre incorrect par rapport aux variables renseignés [nbValues = '.$nbValues.', count args = '.count($args).']');
     $countStrAugment = 0;
     for($i = 0; $i < $nbValues; $i++) {
-        //echo '[index testé ='.$i.' , value testé = '. $argumentFoundPlace[$i]['value'].', args même index = '.$args[$i].']'.PHP_EOL;
         switch($argumentFoundPlace[$i]['value'])
         {
             case '%s':
@@ -76,8 +71,6 @@ function printf(string $text, mixed ... $args) {
                 else throw new Exception('Nombre entier attendu au paramètre '.$i);
                 break;
             }
-            //case '%x':
-            //case '%X':
             case '%d':
             {
                 if (is_int($args[$i])) {
@@ -89,11 +82,12 @@ function printf(string $text, mixed ... $args) {
                     {
                         $args[$i] = $args[$i]-$maxSigned;
                     }
-                    $args[$i] = (string)$args[$i];
                 }
                 else throw new Exception('Nombre entier attendu au paramètre '.$i);
                 break;
             }
+            //case '%x':
+            //case '%X':
             //case '%e':
             //case '%E':
             //case '%F':
@@ -103,14 +97,11 @@ function printf(string $text, mixed ... $args) {
             //case '%H':
             case '%f':
             {
-                if(is_float($args[$i])) {
-                    $args[$i] = (string)$args[$i];
-                }
-                else throw new Exception('Nombre démical attendu au paramètre '.$i);
+                if(!is_float($args[$i])) throw new Exception('Nombre démical attendu au paramètre '.$i);
                 break;
             }
         }
-        $text = substr_replace($text, $args[$i], $argumentFoundPlace[$i]['pos']+$countStrAugment, 2);
+        $text = substr_replace($text, (string)$args[$i], $argumentFoundPlace[$i]['pos']+$countStrAugment, 2);
         $countStrAugment += (strlen($args[$i])-2);
     }
     echo $text.PHP_EOL;
